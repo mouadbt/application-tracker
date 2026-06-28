@@ -1,6 +1,5 @@
 vendor/
+node_modules/
 .env
 public/uploads/
-public/assets/css/app.css
-tailwindcss
-*.log
+public/assets/css/output.css

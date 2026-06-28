@@ -1,0 +1,12 @@
+{
+  "scripts": {
+    "dev": "node scripts/dev.js"
+  },
+  "dependencies": {
+    "@tailwindcss/cli": "^4.3.1",
+    "tailwindcss": "^4.3.1"
+  },
+  "devDependencies": {
+    "browser-sync": "^3.0.4"
+  }
+}
