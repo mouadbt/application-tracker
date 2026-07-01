@@ -5,11 +5,5 @@
             "App\\": "app/"
         }
     },
-    "authors": [
-        {
-            "name": "mouadbt",
-            "email": "160415648+mouadbt@users.noreply.github.com"
-        }
-    ],
     "require": {}
 }
