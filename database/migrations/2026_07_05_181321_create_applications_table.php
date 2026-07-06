@@ -14,6 +14,11 @@ return new class extends Migration
     {
         Schema::create('applications', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->string('company_name');
+            $table->string('job_title');
+            $table->text('job_description');
+            $table->string('status', 50)->default('applied');
             $table->string('source', 100)->nullable();
             $table->text('job_url')->nullable();
             $table->string('resume_path', 500)->nullable();
