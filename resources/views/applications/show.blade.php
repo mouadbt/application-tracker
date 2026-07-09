@@ -34,13 +34,13 @@
                         <p class="text-body">{{ $application->applied_at?->format('M d, Y') ?? '—' }}</p>
                     </div>
                     @if($application->job_url)
-                    <div>
-                        <p class="text-description mb-1">Job URL</p>
-                        <a href="{{ $application->job_url }}" target="_blank"
-                           class="text-primary hover:underline text-sm truncate block">
-                            View Posting ↗
-                        </a>
-                    </div>
+                        <div>
+                            <p class="text-description mb-1">Job URL</p>
+                            <a href="{{ $application->job_url }}" target="_blank"
+                                class="text-primary hover:underline text-sm truncate block">
+                                View Posting ↗
+                            </a>
+                        </div>
                     @endif
                 </div>
             </div>
@@ -54,31 +54,32 @@
         </div>
 
         @if($application->cover_letter_text)
-        <div class="card">
-            <div class="card-content">
-                <h3 class="text-label mb-2">Cover Letter</h3>
-                <p class="text-body text-sm whitespace-pre-wrap leading-relaxed">{{ $application->cover_letter_text }}</p>
+            <div class="card">
+                <div class="card-content">
+                    <h3 class="text-label mb-2">Cover Letter</h3>
+                    <p class="text-body text-sm whitespace-pre-wrap leading-relaxed">{{ $application->cover_letter_text }}
+                    </p>
+                </div>
             </div>
-        </div>
         @endif
 
         @if($application->email_to)
-        <div class="card">
-            <div class="card-content">
-                <h3 class="text-label mb-2">Email</h3>
-                <p class="text-description mb-3">To: {{ $application->email_to }}</p>
-                <p class="text-body text-sm whitespace-pre-wrap leading-relaxed">{{ $application->email_body }}</p>
+            <div class="card">
+                <div class="card-content">
+                    <h3 class="text-label mb-2">Email</h3>
+                    <p class="text-description mb-3">To: {{ $application->email_to }}</p>
+                    <p class="text-body text-sm whitespace-pre-wrap leading-relaxed">{{ $application->email_body }}</p>
+                </div>
             </div>
-        </div>
         @endif
 
         @if($application->notes)
-        <div class="card">
-            <div class="card-content">
-                <h3 class="text-label mb-2">Notes</h3>
-                <p class="text-body text-sm whitespace-pre-wrap leading-relaxed">{{ $application->notes }}</p>
+            <div class="card">
+                <div class="card-content">
+                    <h3 class="text-label mb-2">Notes</h3>
+                    <p class="text-body text-sm whitespace-pre-wrap leading-relaxed">{{ $application->notes }}</p>
+                </div>
             </div>
-        </div>
         @endif
 
     </div>

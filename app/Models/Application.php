@@ -17,7 +17,6 @@ class Application extends Model
         'resume_path',
         'cover_letter_text',
         'cover_letter_path',
-        'questions',
         'email_to',
         'email_body',
         'notes',
@@ -25,7 +24,6 @@ class Application extends Model
     ];
 
     protected $casts = [
-        'questions' => 'array',
         'applied_at' => 'date',
     ];
 }

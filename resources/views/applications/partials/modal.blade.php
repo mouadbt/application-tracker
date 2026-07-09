@@ -61,6 +61,7 @@
                 <textarea id="email_body" name="email_body" rows="3" class="input h-auto resize-none"
                     placeholder="Email content..."></textarea>
             </div>
+
             <div class="grid gap-2">
                 <x-input-label for="notes" :value="__('Notes')" />
                 <textarea id="notes" name="notes" rows="2" class="input h-auto resize-none"
