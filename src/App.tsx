@@ -1,9 +1,14 @@
-import Button from "./blocks/components/Button";
-import Input from "./blocks/components/Input";
+import Header from "./components/Header";
+import Button from "./components/ui/Button";
+import Input from "./components/ui/Input";
 
 function App() {
   return (
     <>
+      <Header/>
+
+
+
       <div className="min-h-screen bg-background p-8 flex flex-col gap-4">
         <h1 className="heading">Job Tracker</h1>
 
