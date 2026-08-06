@@ -12,6 +12,13 @@
   --font-sans: "Geist Sans", sans-serif;
   --font-mono: "Geist Mono", ui-monospace, monospace;
 
+  --svg-gray: #e6e6e6;
+  --svg-dark-purple: #3f3d56;
+  --svg-white: #f2f2f2;
+  --svg-skin: #ffb8b8;
+  --svg-deep-purple: #2f2e41;
+  --svg-black: #000000;
+
   --color-background: lab(100% 0 0);
   --color-foreground: lab(2.75381% 0 0);
   --color-card: lab(100% 0 0);
@@ -36,7 +43,7 @@
     font-family: var(--font-sans);
   }
   body {
-    @apply bg-background text-foreground text-sm leading-relaxed;
+    @apply bg-background text-muted-foreground text-sm leading-relaxed;
   }
   h1,
   h2,
@@ -46,11 +53,13 @@
   h6 {
     @apply font-semibold tracking-tight text-primary;
   }
-
   .btn,
   .input,
   a {
-    @apply outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/30 disabled:pointer-events-none disabled:opacity-50 transition-all border-transparent rounded-3xl gap-1.5 p-2 px-4 active:scale-95;
+    @apply outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/30 disabled:pointer-events-none disabled:opacity-50 transition-all border-transparent rounded-3xl gap-1.5 p-2 px-4;
+  }
+  .btn {
+    @apply active:scale-95;
   }
   .btn-primary {
     @apply bg-primary text-primary-foreground hover:bg-primary/80;
@@ -59,7 +68,7 @@
     @apply bg-secondary text-secondary-foreground hover:bg-secondary/70;
   }
   .btn-icon {
-    @apply bg-background text-secondary-foreground/50 hover:bg-secondary/70 size-8 border border-ring flex justify-center items-center p-0 hover:text-primary; 
+    @apply bg-background text-secondary-foreground/50 hover:bg-secondary/70 size-8 border border-ring flex justify-center items-center p-0 hover:text-primary;
   }
   .btn-icon svg {
     @apply size-5;

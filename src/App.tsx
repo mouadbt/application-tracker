@@ -1,15 +1,17 @@
+import ApplicationsSection from "./components/ApplicationsSection";
 import Header from "./components/Header";
-import Button from "./components/ui/Button";
-import Input from "./components/ui/Input";
+import SummaryCardsSection from "./components/SummaryCardsSection";
 
 function App() {
   return (
     <>
-      <Header/>
+      <Header />
+      <main className="p-8">
+        <SummaryCardsSection />
+        <ApplicationsSection />
+      </main>
 
-
-
-      <div className="min-h-screen bg-background p-8 flex flex-col gap-4">
+      {/* <div className="min-h-screen bg-background p-8 flex flex-col gap-4">
         <h1 className="heading">Job Tracker</h1>
 
         <div className="flex gap-3">
@@ -23,7 +25,7 @@ function App() {
           <Input placeholder="Company name..." />
           <Input placeholder="Job title..." />
         </div>
-      </div>
+      </div> */}
     </>
   );
 }
