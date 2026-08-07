@@ -13,7 +13,7 @@ export default function Header() {
         </h1>
         <hr className="bg-border h-0.5 w-12" />
       </div>
-      <Button variant="icon">
+      <Button variant="icon" commandfor="app-form" command="show-modal">
         <span className="sr-only">Add new job application</span>
         <Plus />
       </Button>

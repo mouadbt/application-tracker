@@ -1,3 +1,8 @@
+type Command =
+  | "show-modal"
+  | "close"
+  | `--${string}`;
+
 interface ButtonProps {
   children: React.ReactNode;
   variant?: "primary" | "secondary" | "danger" | "ghost" | "icon";
@@ -5,6 +10,8 @@ interface ButtonProps {
   onClick?: () => void;
   disabled?: boolean;
   className?: string;
+  commandfor?: string;
+  command?: Command;
 }
 
 const Button = ({
@@ -14,6 +21,8 @@ const Button = ({
   onClick,
   disabled,
   className = "",
+  commandfor,
+  command,
 }: ButtonProps) => {
   return (
     <button
@@ -21,6 +30,8 @@ const Button = ({
       onClick={onClick}
       disabled={disabled}
       className={`btn btn-${variant} ${className}`}
+      commandfor={commandfor}
+      command={command}
     >
       {children}
     </button>

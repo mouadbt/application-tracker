@@ -1,7 +1,8 @@
+import ApplicationForm from "./components/ui/Dialog";
 import ApplicationsSection from "./components/ApplicationsSection";
 import Header from "./components/Header";
 import SummaryCardsSection from "./components/SummaryCardsSection";
-
+import LoadingApplicationIdecator from "./components/ui/LoadingApplicationIdecator";
 function App() {
   return (
     <>
@@ -9,7 +10,9 @@ function App() {
       <main className="p-8">
         <SummaryCardsSection />
         <ApplicationsSection />
+        <ApplicationForm/>
       </main>
+      {/* <Tsss/> */}
 
       {/* <div className="min-h-screen bg-background p-8 flex flex-col gap-4">
         <h1 className="heading">Job Tracker</h1>

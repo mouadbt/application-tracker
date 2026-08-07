@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import Quote from "./icons/Quote";
 const FALLBACK_QUOTE = {
   author: "Sam Levenson",
-  quote: "Don't watch the clock...",
+  quote: "The only place where success comes before work is in the dictionary.",
 };
 const LOADING_QUOTE = {
   author: "Loading...",
@@ -15,6 +15,7 @@ export default function QuoteCard() {
       fetch("https://random-quotes-freeapi.vercel.app/api/random").then((res) =>
         res.json(),
       ),
+    staleTime: 1000 * 60 * 60 * 24,
   });
   return (
     <div className="bg-card flex flex-col rounded-xl space-y-4 p-6 border border-border pr-24 relative">
@@ -32,7 +33,7 @@ export default function QuoteCard() {
             ? FALLBACK_QUOTE.quote
             : data.quote}
       </dd>
-      <Quote/>
+      <Quote />
     </div>
   );
 }

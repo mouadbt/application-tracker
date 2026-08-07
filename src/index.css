@@ -124,3 +124,15 @@
     @apply whitespace-nowrap p-2 align-middle;
   }
 }
+
+@keyframes moving {
+  50% {
+    width: 100%;
+  }
+
+  100% {
+    width: 0;
+    right: 0;
+    left: unset;
+  }
+}
