@@ -1,6 +1,6 @@
 export default function Table() {
   return (
-    <div className="border rounded-xl border-border">
+    <div className="border rounded-xl border-border overflow-x-auto">
       <table className="table">
         <thead className="table-thead bg-accent text-foreground">
           <tr>
