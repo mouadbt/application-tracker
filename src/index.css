@@ -86,7 +86,7 @@
     @apply h-9 w-full rounded-3xl border border-border bg-input/50 px-3 py-1 text-sm outline-none placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 transition-all;
   }
   .textarea {
-    @apply min-h-[80px] w-full rounded-3xl border border-border bg-input/50 px-3 py-2 text-sm outline-none placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 transition-all resize-y;
+    @apply min-h-20 w-full rounded-3xl border border-border bg-input/50 px-3 py-2 text-sm outline-none placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 transition-all resize-y;
   }
   .select {
     @apply h-9 w-full rounded-3xl border border-border bg-input/50 px-3 py-1 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 transition-all appearance-none bg-no-repeat;
