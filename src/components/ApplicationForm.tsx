@@ -1,42 +1,59 @@
 import { useForm, type SubmitHandler } from "react-hook-form";
+import { z } from "zod";
 import Input from "./ui/Input";
 import FormField from "./ui/FormField";
 import Button from "./ui/Button";
 import TextArea from "./ui/TextArea";
 import Select from "./ui/Select";
 import { useDialog } from "../hooks/useDialog";
-type jobStatus =
-  | "Ghosted"
-  | "HR Interview"
-  | "Technical Interview"
-  | "Assessment"
-  | "ghosted"
-  | "Rejected";
-type ApplicationFormFileds = {
-  jobTitle: string;
-  jobDescription: string;
-  jobUrl: string;
-  jobStatus: jobStatus;
-  company: string;
-  notes: string;
-  resumeUsed: string;
-};
-const jobStatusOption: string[] = [
+import FormFieldError from "./ui/FormFieldError";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+const jobStatusOptions: string[] = [
   "Ghosted",
   "HR Interview",
   "Technical Interview",
   "Assessment",
-  "ghosted",
   "Rejected",
 ];
+const schema = z.object({
+  jobTitle: z.string().min(5),
+  jobDescription: z.string().min(5),
+  jobUrl: z.string().min(5),
+  jobStatus: z.enum(jobStatusOptions),
+  company: z.string().min(5),
+  notes: z.string().min(5),
+  // resumeUsed: z.string().min(5),
+});
+
+type ApplicationFormFileds = z.infer<typeof schema>;
+
 export default function ApplicationForm() {
   const {
     register,
     handleSubmit,
-    formState: { errors },
-  } = useForm<ApplicationFormFileds>();
-  const onSubmit: SubmitHandler<ApplicationFormFileds> = (data) => {
-    console.log(data);
+    formState: { errors, isSubmitting },
+    // setError,
+  } = useForm<ApplicationFormFileds>({
+    defaultValues: {
+      jobStatus: "Ghosted",
+    },
+    resolver:zodResolver(schema),
+  });
+  const onSubmit: SubmitHandler<ApplicationFormFileds> = async (data) => {
+    // try {
+    //   await new Promise((_, reject) =>
+    //     setTimeout(() => {
+    //       reject("ll h");
+    //     }, 3000),
+    //   );
+    //   console.log(data)
+    // } catch (error) {
+    //   setError("root", {
+    //     message: `Error ins the form ${error}`,
+    //   });
+    // }
+     console.log(data)
   };
   const { closeDialog } = useDialog();
   return (
@@ -45,25 +62,52 @@ export default function ApplicationForm() {
       className="flex flex-col gap-4"
       onSubmit={handleSubmit(onSubmit)}
     >
-      <FormField label="Job Title" id="jobTitle" error={errors.jobTitle?.message}>
-        <Input type="text" id="jobTitle" {...register("jobTitle", { required: "Job title is required" })} />
+      <FormField
+        label="Job Title"
+        id="jobTitle"
+        error={errors.jobTitle?.message}
+      >
+        <Input
+          type="text"
+          id="jobTitle"
+          {...register("jobTitle")}
+        />
       </FormField>
 
       <FormField label="Company" id="company" error={errors.company?.message}>
-        <Input type="text" id="company" {...register("company", { required: "Company is required" })} />
+        <Input
+          type="text"
+          id="company"
+          {...register("company")}
+        />
       </FormField>
 
-      <FormField label="Job Description" id="jobDescription" error={errors.jobDescription?.message}>
-        <Input type="text" id="jobDescription" {...register("jobDescription")} />
+      <FormField
+        label="Job Description"
+        id="jobDescription"
+        error={errors.jobDescription?.message}
+      >
+        <Input
+          type="text"
+          id="jobDescription"
+          {...register("jobDescription")}
+        />
       </FormField>
 
       <FormField label="Job URL" id="jobUrl" error={errors.jobUrl?.message}>
         <Input type="text" id="jobUrl" {...register("jobUrl")} />
       </FormField>
 
-      <FormField label="Status" id="jobStatus" error={errors.jobStatus?.message}>
-        <Select id="jobStatus" {...register("jobStatus")}>
-          {jobStatusOption.map((el) => (
+      <FormField
+        label="Status"
+        id="jobStatus"
+        error={errors.jobStatus?.message}
+      >
+        <Select
+          id="jobStatus"
+          {...register("jobStatus")}
+        >
+          {jobStatusOptions.map((el) => (
             <option value={el} key={el}>
               {el}
             </option>
@@ -75,12 +119,14 @@ export default function ApplicationForm() {
         <TextArea id="notes" {...register("notes")} />
       </FormField>
 
+      {errors.root && <FormFieldError errorMsg={errors.root.message} />}
+
       <div className="flex justify-end gap-4">
         <Button variant="ghost" onClick={closeDialog}>
           Cancel
         </Button>
-        <Button variant="primary" type="submit">
-          Submit Application
+        <Button variant="primary" type="submit" disabled={isSubmitting}>
+          {isSubmitting ? "Submitting..." : "Submit Application"}
         </Button>
       </div>
     </form>

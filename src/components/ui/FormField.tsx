@@ -1,5 +1,6 @@
 import React from "react";
 import Label from "./Label";
+import FormFieldError from "./FormFieldError";
 
 interface FormFieldProps {
   label: string;
@@ -13,7 +14,7 @@ const FormField = ({ label, error, children, id }: FormFieldProps) => {
     <div className="space-y-2">
       <Label htmlFor={id}>{label}</Label>
       {children}
-      {error && <span className="text-xs text-destructive">{error}</span>}
+      {error && <FormFieldError errorMsg={error} />}
     </div>
   );
 };
