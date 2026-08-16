@@ -1,4 +1,4 @@
-import { useRef, useState, type ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { DialogContext } from "./DialogContext";
 import Dialog from "../components/ui/Dialog";
 
@@ -7,30 +7,31 @@ type DialogContent = {
   desc: string;
   dialogChildren: ReactNode;
 };
+
 export function DialogProvider({ children }: { children: ReactNode }) {
-  const dialogRef = useRef<HTMLDialogElement>(null);
+  const [isOpen, setIsOpen] = useState(false);
   const [content, setContent] = useState<DialogContent>({
     title: "",
     desc: "",
     dialogChildren: null,
   });
+
   const openDialog = (
     title: string,
     desc: string,
     dialogChildren: ReactNode,
   ) => {
     setContent({ title, desc, dialogChildren });
-    dialogRef.current?.showModal();
+    setIsOpen(true);
   };
 
-  const closeDialog = () => {
-    dialogRef.current?.close();
-  };
+  const closeDialog = () => setIsOpen(false);
+
   return (
     <DialogContext.Provider value={{ openDialog, closeDialog }}>
       {children}
       <Dialog
-        ref={dialogRef}
+        isOpen={isOpen}
         title={content.title}
         desc={content.desc}
         onClose={closeDialog}

@@ -8,6 +8,8 @@ import Select from "./ui/Select";
 import { useDialog } from "../hooks/useDialog";
 import FormFieldError from "./ui/FormFieldError";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { supabase } from "../lib/supabaseClient";
+import { toast } from "sonner";
 
 const jobStatusOptions: string[] = [
   "Ghosted",
@@ -38,22 +40,28 @@ export default function ApplicationForm() {
     defaultValues: {
       jobStatus: "Ghosted",
     },
-    resolver:zodResolver(schema),
+    resolver: zodResolver(schema),
   });
-  const onSubmit: SubmitHandler<ApplicationFormFileds> = async (data) => {
-    // try {
-    //   await new Promise((_, reject) =>
-    //     setTimeout(() => {
-    //       reject("ll h");
-    //     }, 3000),
-    //   );
-    //   console.log(data)
-    // } catch (error) {
-    //   setError("root", {
-    //     message: `Error ins the form ${error}`,
-    //   });
-    // }
-     console.log(data)
+  const onSubmit: SubmitHandler<ApplicationFormFileds> = async (formData) => {
+    try {
+      const { data, error } = await supabase
+        .from("jobApplication")
+        .insert({
+          jobTitle: formData.jobTitle,
+          jobDescription: formData.jobDescription,
+          jobUrl: formData.jobUrl,
+          jobStatus: formData.jobStatus,
+          company: formData.company,
+          notes: formData.notes,
+        })
+        .single();
+
+      if (error) throw error;
+      console.log(data);
+    } catch (error) {
+      console.error(error.message);
+      toast(error.message);
+    }
   };
   const { closeDialog } = useDialog();
   return (
@@ -67,19 +75,11 @@ export default function ApplicationForm() {
         id="jobTitle"
         error={errors.jobTitle?.message}
       >
-        <Input
-          type="text"
-          id="jobTitle"
-          {...register("jobTitle")}
-        />
+        <Input type="text" id="jobTitle" {...register("jobTitle")} />
       </FormField>
 
       <FormField label="Company" id="company" error={errors.company?.message}>
-        <Input
-          type="text"
-          id="company"
-          {...register("company")}
-        />
+        <Input type="text" id="company" {...register("company")} />
       </FormField>
 
       <FormField
@@ -103,10 +103,7 @@ export default function ApplicationForm() {
         id="jobStatus"
         error={errors.jobStatus?.message}
       >
-        <Select
-          id="jobStatus"
-          {...register("jobStatus")}
-        >
+        <Select id="jobStatus" {...register("jobStatus")}>
           {jobStatusOptions.map((el) => (
             <option value={el} key={el}>
               {el}
