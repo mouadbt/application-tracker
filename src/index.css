@@ -55,8 +55,9 @@
   }
   .btn,
   .input,
+  .textarea,
   a {
-    @apply outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/30 disabled:pointer-events-none disabled:opacity-50 transition-all border-transparent rounded-3xl gap-1.5 p-2 px-4;
+    @apply outline-none focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-ring/70 disabled:pointer-events-none disabled:opacity-50 transition-all border-transparent rounded-3xl gap-1.5 p-2 px-4;
   }
   .btn {
     @apply active:translate-y-1 select-none;
@@ -144,4 +145,3 @@
     left: unset;
   }
 }
-

@@ -21,19 +21,22 @@ const jobStatusOptions: string[] = [
 const schema = z.object({
   jobTitle: z.string().min(5),
   jobDescription: z.string().min(5),
-  jobUrl: z.string().min(5),
+  jobUrl: z.url(),
   jobStatus: z.enum(jobStatusOptions),
   company: z.string().min(5),
   notes: z.string().min(5),
+  appliedAt: z.iso.date(),
   // resumeUsed: z.string().min(5),
 });
 
 type ApplicationFormFileds = z.infer<typeof schema>;
 
 export default function ApplicationForm() {
+  const { closeDialog } = useDialog();
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors, isSubmitting },
     // setError,
   } = useForm<ApplicationFormFileds>({
@@ -53,49 +56,66 @@ export default function ApplicationForm() {
           jobStatus: formData.jobStatus,
           company: formData.company,
           notes: formData.notes,
+          appliedAt: formData.appliedAt,
         })
+        .select()
         .single();
 
       if (error) throw error;
-      console.log(data);
+      const rowId: number = data.id;
+      if (rowId) {
+        handleSuccessedSubmit(rowId);
+      }
     } catch (error) {
       console.error(error.message);
       toast(error.message);
     }
   };
-  const { closeDialog } = useDialog();
+  const handleSuccessedSubmit = (rowId: number): void => {
+    toast(`Job Application saved successfuly, ID: ${rowId}`);
+    reset();
+    closeDialog();
+  };
   return (
     <form
       action=""
       className="flex flex-col gap-4"
       onSubmit={handleSubmit(onSubmit)}
     >
-      <FormField
-        label="Job Title"
-        id="jobTitle"
-        error={errors.jobTitle?.message}
-      >
-        <Input type="text" id="jobTitle" {...register("jobTitle")} />
-      </FormField>
+      <div className="grid grid-cols-12 gap-4">
+        <FormField
+          label="Job Title"
+          id="jobTitle"
+          error={errors.jobTitle?.message}
+          className="col-span-8"
+        >
+          <Input type="text" id="jobTitle" {...register("jobTitle")} />
+        </FormField>
 
-      <FormField label="Company" id="company" error={errors.company?.message}>
-        <Input type="text" id="company" {...register("company")} />
-      </FormField>
+        <FormField
+          label="Company"
+          className="col-span-4"
+          id="company"
+          error={errors.company?.message}
+        >
+          <Input type="text" id="company" {...register("company")} />
+        </FormField>
+      </div>
 
       <FormField
         label="Job Description"
         id="jobDescription"
         error={errors.jobDescription?.message}
       >
-        <Input
-          type="text"
-          id="jobDescription"
-          {...register("jobDescription")}
-        />
+        <TextArea id="jobDescription" {...register("jobDescription")} />
       </FormField>
 
       <FormField label="Job URL" id="jobUrl" error={errors.jobUrl?.message}>
         <Input type="text" id="jobUrl" {...register("jobUrl")} />
+      </FormField>
+
+      <FormField label="Date" id="date" error={errors.appliedAt?.message}>
+        <Input type="date" id="date" {...register("appliedAt")} />
       </FormField>
 
       <FormField
