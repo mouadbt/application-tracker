@@ -18,6 +18,7 @@ const jobStatusOptions: string[] = [
   "Assessment",
   "Rejected",
 ];
+
 const schema = z.object({
   jobTitle: z.string().min(5),
   jobDescription: z.string().min(5),
@@ -26,7 +27,16 @@ const schema = z.object({
   company: z.string().min(5),
   notes: z.string().min(5),
   appliedAt: z.iso.date(),
-  // resumeUsed: z.string().min(5),
+  cv: z
+    .instanceof(File)
+    .refine((file) => file.size <= 2 * 1024 * 1024, "CV must be less than 5MB")
+    .refine(
+      (file) =>
+        file.type === "application/pdf" ||
+        file.type ===
+          "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "CV must be a PDF/DOCX",
+    ),
 });
 
 type ApplicationFormFileds = z.infer<typeof schema>;
@@ -37,16 +47,32 @@ export default function ApplicationForm() {
     register,
     handleSubmit,
     reset,
+    setValue,
     formState: { errors, isSubmitting },
     // setError,
   } = useForm<ApplicationFormFileds>({
     defaultValues: {
       jobStatus: "Ghosted",
+    //   appliedAt:"",
     },
     resolver: zodResolver(schema),
   });
   const onSubmit: SubmitHandler<ApplicationFormFileds> = async (formData) => {
     try {
+      // Upload CV first
+      const fileExt = formData.cv.name.split(".").pop();
+      const fileName =
+        `${crypto.randomUUID()}_${formData.company}_${formData.jobTitle}.${fileExt}`
+          .toLowerCase()
+          .replace(/[^a-z0-9]/g, "_");
+
+      const { error: uploadError } = await supabase.storage
+        .from("cvs")
+        .upload(fileName, formData.cv);
+
+      if (uploadError) throw uploadError;
+
+      // Insert application with cv path
       const { data, error } = await supabase
         .from("jobApplication")
         .insert({
@@ -57,18 +83,18 @@ export default function ApplicationForm() {
           company: formData.company,
           notes: formData.notes,
           appliedAt: formData.appliedAt,
+          cvPath: fileName,
         })
         .select()
         .single();
 
       if (error) throw error;
-      const rowId: number = data.id;
-      if (rowId) {
-        handleSuccessedSubmit(rowId);
-      }
+
+      handleSuccessedSubmit(data.id);
     } catch (error) {
-      console.error(error.message);
-      toast(error.message);
+      if (error instanceof Error) {
+        toast(error.message);
+      }
     }
   };
   const handleSuccessedSubmit = (rowId: number): void => {
@@ -110,27 +136,57 @@ export default function ApplicationForm() {
         <TextArea id="jobDescription" {...register("jobDescription")} />
       </FormField>
 
-      <FormField label="Job URL" id="jobUrl" error={errors.jobUrl?.message}>
-        <Input type="text" id="jobUrl" {...register("jobUrl")} />
-      </FormField>
+      <div className="grid grid-cols-12 gap-4">
+        <FormField
+          label="Job URL"
+          id="jobUrl"
+          className="col-span-8"
+          error={errors.jobUrl?.message}
+        >
+          <Input type="text" id="jobUrl" {...register("jobUrl")} />
+        </FormField>
+        <FormField
+          label="Date"
+          id="date"
+          className="col-span-4"
+          error={errors.appliedAt?.message}
+        >
+          <Input type="date" id="date" {...register("appliedAt")} />
+        </FormField>
+      </div>
 
-      <FormField label="Date" id="date" error={errors.appliedAt?.message}>
-        <Input type="date" id="date" {...register("appliedAt")} />
-      </FormField>
-
-      <FormField
-        label="Status"
-        id="jobStatus"
-        error={errors.jobStatus?.message}
-      >
-        <Select id="jobStatus" {...register("jobStatus")}>
-          {jobStatusOptions.map((el) => (
-            <option value={el} key={el}>
-              {el}
-            </option>
-          ))}
-        </Select>
-      </FormField>
+      <div className="grid grid-cols-12 gap-4">
+        <FormField
+          className="col-span-7"
+          label="Status"
+          id="jobStatus"
+          error={errors.jobStatus?.message}
+        >
+          <Select id="jobStatus" {...register("jobStatus")}>
+            {jobStatusOptions.map((el) => (
+              <option value={el} key={el}>
+                {el}
+              </option>
+            ))}
+          </Select>
+        </FormField>
+        <FormField
+          label="CV"
+          id="cv"
+          className="col-span-5"
+          error={errors.cv?.message}
+        >
+          <Input
+            type="file"
+            id="cv"
+            accept=".pdf,.docx"
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (file) setValue("cv", file);
+            }}
+          />
+        </FormField>
+      </div>
 
       <FormField label="Notes" id="notes" error={errors.notes?.message}>
         <TextArea id="notes" {...register("notes")} />
