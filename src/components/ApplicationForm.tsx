@@ -53,7 +53,7 @@ export default function ApplicationForm() {
   } = useForm<ApplicationFormFileds>({
     defaultValues: {
       jobStatus: "Ghosted",
-    //   appliedAt:"",
+      appliedAt:new Date().toISOString().split("T")[0],
     },
     resolver: zodResolver(schema),
   });
