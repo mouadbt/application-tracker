@@ -38,6 +38,7 @@ export default function Dialog({
           w-[calc(100%-2rem)]
           max-w-2xl
           p-6 gap-4
+          px-5
           rounded-2xl
           border border-border
           bg-card
@@ -60,14 +61,16 @@ export default function Dialog({
             </p>
           </div>
           <Button
-            className="btn-icon size-8 -mt-2 -mr-2 svg-wrapper"
+            className="btn-icon size-8 -mt-2 svg-wrapper"
             variant="icon"
             onClick={onClose}
           >
             <Plus className="rotate-45" />
           </Button>
         </header>
-        {dialogChildren}
+        <div className="overflow-y-scroll scrollbar-none [&::-webkit-scrollbar]:hidden px-1">
+          {dialogChildren}
+        </div>
       </div>
     </>
   );

@@ -1,4 +1,4 @@
-import { useForm, type SubmitHandler } from "react-hook-form";
+import { useForm, useWatch, type SubmitHandler } from "react-hook-form";
 import { z } from "zod";
 import Input from "./ui/Input";
 import FormField from "./ui/FormField";
@@ -19,6 +19,17 @@ const jobStatusOptions: string[] = [
   "Rejected",
 ];
 
+const sourceOptions: string[] = [
+  "LinkedIn",
+  "Indeed",
+  "Glassdoor",
+  "Company Website",
+  "Referral",
+  "Job Fair",
+  "Facebook",
+  "Other",
+];
+
 const schema = z.object({
   jobTitle: z.string().min(5),
   jobDescription: z.string().min(5),
@@ -37,6 +48,8 @@ const schema = z.object({
           "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
       "CV must be a PDF/DOCX",
     ),
+  source: z.enum(sourceOptions),
+  sourceOther: z.string().optional(),
 });
 
 type ApplicationFormFileds = z.infer<typeof schema>;
@@ -48,14 +61,22 @@ export default function ApplicationForm() {
     handleSubmit,
     reset,
     setValue,
+    control,
     formState: { errors, isSubmitting },
+
     // setError,
   } = useForm<ApplicationFormFileds>({
     defaultValues: {
       jobStatus: "Ghosted",
-      appliedAt:new Date().toISOString().split("T")[0],
+      appliedAt: new Date().toISOString().split("T")[0],
+      source: "Indeed",
+      sourceOther: "",
     },
     resolver: zodResolver(schema),
+  });
+  const source = useWatch({
+    control,
+    name: "source",
   });
   const onSubmit: SubmitHandler<ApplicationFormFileds> = async (formData) => {
     try {
@@ -187,6 +208,33 @@ export default function ApplicationForm() {
           />
         </FormField>
       </div>
+
+      <Select id="source" {...register("source")}>
+        {sourceOptions.map((el) => (
+          <option value={el} key={el}>
+            {el}
+          </option>
+        ))}
+      </Select>
+
+      {source === "Other" && (
+        <FormField
+          label="Other source"
+          id="sourceOther"
+          error={errors.sourceOther?.message}
+        >
+          <Input
+            type="text"
+            id="sourceOther"
+            {...register("sourceOther", {
+              validate: (value) =>
+                source !== "Other" ||
+                !!value.trim() ||
+                "Please specify where you found this job",
+            })}
+          />
+        </FormField>
+      )}
 
       <FormField label="Notes" id="notes" error={errors.notes?.message}>
         <TextArea id="notes" {...register("notes")} />
