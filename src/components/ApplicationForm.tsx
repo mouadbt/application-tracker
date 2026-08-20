@@ -25,32 +25,41 @@ const sourceOptions: string[] = [
   "Glassdoor",
   "Company Website",
   "Referral",
-  "Job Fair",
-  "Facebook",
   "Other",
 ];
 
-const schema = z.object({
-  jobTitle: z.string().min(5),
-  jobDescription: z.string().min(5),
-  jobUrl: z.url(),
-  jobStatus: z.enum(jobStatusOptions),
-  company: z.string().min(5),
-  notes: z.string().min(5),
-  appliedAt: z.iso.date(),
-  cv: z
-    .instanceof(File)
-    .refine((file) => file.size <= 2 * 1024 * 1024, "CV must be less than 5MB")
-    .refine(
-      (file) =>
-        file.type === "application/pdf" ||
-        file.type ===
-          "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-      "CV must be a PDF/DOCX",
-    ),
-  source: z.enum(sourceOptions),
-  sourceOther: z.string().optional(),
-});
+const schema = z
+  .object({
+    jobTitle: z.string().min(5),
+    jobDescription: z.string().min(5),
+    jobUrl: z.url(),
+    jobStatus: z.enum(jobStatusOptions),
+    company: z.string().min(5),
+    notes: z.string().min(5),
+    appliedAt: z.iso.date(),
+    cv: z
+      .instanceof(File)
+      .refine(
+        (file) => file.size <= 2 * 1024 * 1024,
+        "CV must be less than 5MB",
+      )
+      .refine(
+        (file) =>
+          file.type === "application/pdf" ||
+          file.type ===
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        "CV must be a PDF/DOCX",
+      ),
+    source: z.enum(sourceOptions),
+    sourceOther: z.string().optional(),
+  })
+  .refine(
+    (data) => data.source !== "Other" || data.sourceOther?.trim().length > 0,
+    {
+      message: "Please specify from where you applied to this job",
+      path: ["sourceOther"],
+    },
+  );
 
 type ApplicationFormFileds = z.infer<typeof schema>;
 
@@ -78,7 +87,9 @@ export default function ApplicationForm() {
     control,
     name: "source",
   });
+
   const onSubmit: SubmitHandler<ApplicationFormFileds> = async (formData) => {
+    console.log({ formData, errors });
     try {
       // Upload CV first
       const fileExt = formData.cv.name.split(".").pop();
@@ -223,16 +234,7 @@ export default function ApplicationForm() {
           id="sourceOther"
           error={errors.sourceOther?.message}
         >
-          <Input
-            type="text"
-            id="sourceOther"
-            {...register("sourceOther", {
-              validate: (value) =>
-                source !== "Other" ||
-                !!value.trim() ||
-                "Please specify where you found this job",
-            })}
-          />
+          <Input type="text" id="sourceOther" {...register("sourceOther")} />
         </FormField>
       )}
 
